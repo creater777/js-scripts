@@ -1,46 +1,39 @@
 ;
-var
-$import = function(src){
-    var e = document.createElement("script");
-    e.src = src;
-    e.type="text/javascript";
-    document.getElementsByTagName("head")[0].appendChild(e);
+var layout = function(title){
+     return {
+         title: title,
+         showlegend: false,
+         height: 400,
+         width: 600
+     }
 };
 
-var chartData = function(labels, data, color){
-    return {
-		labels : labels,
-		datasets : [
-			{
-				fillColor : "rgba(151,187,205,0.5)",
-				strokeColor : "rgba(151,187,205,0.8)",
-				highlightFill: "rgba(151,187,205,0.7)",
-				highlightStroke: "rgba(151,187,205,1)",
-				data : data
-			}
-		]
-
-	}
-}
-
 Array.prototype.draw = function(){
-    var canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-  	document.getElementsByTagName("body")[0].appendChild(canvas);
 
     switch (this[0].constructor.name){
         case "Number":
+            var canvas = document.createElement("div");
+            canvas.id="numberDiv";
+  	        document.getElementsByTagName("body")[0].appendChild(canvas);
+
             var data = [];
             var labels = [];
             this.forEach(function(entry){
                labels[entry-1] = entry + "";
                data[entry-1] = data[entry-1] == undefined ? 1 : data[entry-1] + 1;
             })
-        	window.myBar = new Chart(ctx).Bar(chartData(labels,data,100), {
-      	    	responsive : true
-           	});
+            var chartData={
+                x: labels,
+                y: data,
+                type: 'bar'
+            }
+            Plotly.newPlot('numberDiv', [chartData], layout("Numeric bar"));
             break;
         case "String":
+            var canvas = document.createElement("div");
+            canvas.id="stringDiv";
+  	        document.getElementsByTagName("body")[0].appendChild(canvas);
+
             var data = [];
             var labels = [];
             this.forEach(function(entry){
@@ -51,12 +44,37 @@ Array.prototype.draw = function(){
                   data[labels.indexOf(entry)] = data[labels.indexOf(entry)] + 1;
                }
             })
-        	window.myBar = new Chart(ctx).Bar(chartData(labels,data,100), {
-      	    	responsive : true
-           	});
-           	break;
-        case "Object":;
-            console.log("Object");
+            var chartData={
+                x: labels,
+                y: data,
+                type: 'bar'
+            }
+            Plotly.newPlot('stringDiv', [chartData], layout("String values"));
+            break;
+        case "Object":
+            if (this[0].x != undefined){
+                var canvas = document.createElement("div");
+                canvas.id="scatterDiv";
+  	            document.getElementsByTagName("body")[0].appendChild(canvas);
+
+  	            var data = [];
+                var labels = [];
+                var sizes = [];
+                this.forEach(function(entry){
+                   labels.push(entry.x);
+                   data.push(entry.y);
+                   sizes.push(entry.r);
+                })
+                var chartData={
+                    x: labels,
+                    y: data,
+                    mode: 'markers',
+                    marker: {
+                        size: sizes
+                    }
+                }
+                Plotly.newPlot('scatterDiv', [chartData], layout("Scatter plot"));
+            }
             break;
         case "Array":;
             console.log("Array");
