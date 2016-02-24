@@ -8,7 +8,11 @@ var layout = function(title){
      }
 };
 
-Array.prototype.draw = function(){
+Object.prototype.draw = function(){
+
+    if (this[0] == undefined){
+        return;
+    }
 
     switch (this[0].constructor.name){
         case "Number":
@@ -77,6 +81,13 @@ Array.prototype.draw = function(){
             }
             break;
         case "Array":;
+            var barData=[];
+            var data = [];
+            var labels = [];
+            var sizes = [];
+            this.forEach(function(entry){
+
+            }
             console.log("Array");
             break;
     }
