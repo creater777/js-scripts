@@ -41,7 +41,20 @@ Array.prototype.draw = function(){
            	});
             break;
         case "String":
-            break;
+            var data = [];
+            var labels = [];
+            this.forEach(function(entry){
+               if (labels.indexOf(entry) == -1){
+                   labels.push(entry);
+                   data.push(1);
+               } else {
+                  data[labels.indexOf(entry)] = data[labels.indexOf(entry)] + 1;
+               }
+            })
+        	window.myBar = new Chart(ctx).Bar(chartData(labels,data,100), {
+      	    	responsive : true
+           	});
+           	break;
         case "Object":;
             console.log("Object");
             break;
