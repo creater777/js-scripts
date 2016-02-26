@@ -3,12 +3,45 @@ var layout = function(title){
      return {
          title: title,
          showlegend: false,
-         height: 400,
-         width: 500
+         height: 300,
+         width: 400
      }
 };
 
 Object.prototype.draw = function(){
+
+    if (this.constructor.name == "Object"){
+        var canvas = document.createElement("div");
+        canvas.id="lineDiv";
+        canvas.style="float: left";
+        document.getElementsByTagName("body")[0].appendChild(canvas);
+        var labels = [];
+        var data = [];
+        for (entry in this){
+            if (this[entry].constructor.name=="Array"){
+                labels.push(entry);
+                data.push(this[entry]);
+            }
+        }
+        var lineData = [];
+        var i = data[0].length;
+        while (i--){
+            var d = [];
+            data.forEach(function(entry, j){
+                d.push(data[j][i]);
+            })
+            lineData.push(d);
+        }
+        var barData = [];
+        lineData.forEach(function(entry){
+            barData.push({
+                x: labels,
+                y: entry,
+                type: "line"
+            })
+        })
+        Plotly.newPlot('lineDiv', barData, layout("Line chart"));
+    }
 
     if (this[0] == undefined){
         return;
@@ -18,7 +51,7 @@ Object.prototype.draw = function(){
         case "Number":
             var canvas = document.createElement("div");
             canvas.id="numberDiv";
-            
+            canvas.style="float: left";
   	        document.getElementsByTagName("body")[0].appendChild(canvas);
 
             var data = [];
@@ -38,6 +71,7 @@ Object.prototype.draw = function(){
         case "String":
             var canvas = document.createElement("div");
             canvas.id="stringDiv";
+            canvas.style="float: left";
   	        document.getElementsByTagName("body")[0].appendChild(canvas);
 
             var data = [];
@@ -62,6 +96,7 @@ Object.prototype.draw = function(){
             if (this[0].x != undefined){
                 var canvas = document.createElement("div");
                 canvas.id="scatterDiv";
+                canvas.style="float: left";
   	            document.getElementsByTagName("body")[0].appendChild(canvas);
 
   	            var data = [];
@@ -86,6 +121,7 @@ Object.prototype.draw = function(){
         case "Array":;
             var canvas = document.createElement("div");
             canvas.id="stackedDiv";
+            canvas.style="float: left";
             document.getElementsByTagName("body")[0].appendChild(canvas);
 
             var barData=[];
